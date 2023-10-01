@@ -1,0 +1,23 @@
+{
+  "name": "@plsr/blaze",
+  "module": "src/index.ts",
+  "version": "0.0.1",
+  "type": "module",
+  "devDependencies": {
+    "@types/lodash-es": "^4.17.9",
+    "@typescript-eslint/eslint-plugin": "^6.7.3",
+    "@typescript-eslint/parser": "^6.7.3",
+    "bun-types": "latest",
+    "eslint": "^8.50.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "typescript": "^5.2.2",
+    "prettier": "^3.0.3"
+  },
+  "peerDependencies": {
+    "openai": "^4.0.0"
+  },
+  "dependencies": {
+    "lodash-es": "^4.17.21"
+  }
+}
