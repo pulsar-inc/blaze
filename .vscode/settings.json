@@ -3,6 +3,9 @@
     "editor.codeActionsOnSave": {
         "source.fixAll": true,
     },
+    "[markdown]": {
+        "editor.formatOnSave": false
+    },
     "[typescript]": {
         "editor.defaultFormatter": "dbaeumer.vscode-eslint",
         "editor.rulers": [

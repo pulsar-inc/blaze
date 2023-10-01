@@ -1,4 +1,4 @@
-# plsr/blaze
+# @plsr/blaze
 
 **Note: right now this lib is only compatible with openai LLMs.**
 
