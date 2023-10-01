@@ -20,51 +20,52 @@ yarn add openai @plsr/blaze
 <details>
   <summary>Example setup</summary>
   
-    ```typescript
-    import OpenAI from "openai";
+  ```typescript
+  import OpenAI from "openai";
+  import { Translator } from "@plsr/blaze";
 
-    const openai = new OpenAI(); // Requires api key in environment
-    const schema = {
-        $schema: "http://json-schema.org/draft-07/schema#",
-        title: "Client",
-        description: "Schema representing a client.",
-        type: "object",
-        properties: {
-            isCompany: {
-                default: false,
-                type: "boolean",
-                description: "true if the client is a company.",
-            },
-            firstName: {
-                type: "string",
-                description: "First name of the client.",
-            },
-            lastName: {
-                type: "string",
-                description: "Last name of the client.",
-            },
-            companyName: {
-                type: "string",
-                description: "Name of the company.",
-            },
-            address: {
-                type: "string",
-                description: "Client's address.",
-            },
-            email: {
-                type: "string",
-                format: "email",
-                description: "Client's email address.",
-            },
-            phone: {
-                type: "string",
-                description: "Client's telephone number.",
-            },
-        },
-    };
+  const openai = new OpenAI(); // Requires api key in environment
+  const schema = {
+      $schema: "http://json-schema.org/draft-07/schema#",
+      title: "Client",
+      description: "Schema representing a client.",
+      type: "object",
+      properties: {
+          isCompany: {
+              default: false,
+              type: "boolean",
+              description: "true if the client is a company.",
+          },
+          firstName: {
+              type: "string",
+              description: "First name of the client.",
+          },
+          lastName: {
+              type: "string",
+              description: "Last name of the client.",
+          },
+          companyName: {
+              type: "string",
+              description: "Name of the company.",
+          },
+          address: {
+              type: "string",
+              description: "Client's address.",
+          },
+          email: {
+              type: "string",
+              format: "email",
+              description: "Client's email address.",
+          },
+          phone: {
+              type: "string",
+              description: "Client's telephone number.",
+          },
+      },
+  };
 
-    const translator = new Translator(openai, schema);
-    ```
+  const translator = new Translator(openai, schema);
+  ```
 
 </details>
 
