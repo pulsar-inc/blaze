@@ -71,7 +71,7 @@ yarn add openai @plsr/blaze
 
 </details>
 
-**Basic example:**
+#### Basic
 
 ```typescript
 translator
@@ -90,7 +90,7 @@ translator
 }
 ```
 
-**Completion example:**
+#### Completion
 
 ```typescript
 translator
@@ -113,6 +113,33 @@ First log
 ```
 
 Second log
+
+```json
+{
+    "isCompany": false,
+    "firstName": "Jean Michel",
+    "lastName": "Frey",
+    "address": "Avenue Montaigne, Paris"
+}
+```
+
+#### Give examples
+
+Bad example, just to demonstrate method usage.
+
+```typescript
+translator
+    .addExample('Jean paul mars lives in Paris', {
+        isCompany: false,
+        firstName: "Jean-Paul",
+        lastName: "Mars",
+        address: "Paris"
+    })
+    .translate(
+        "Just sold 2 resistors and one capacitor to Jean Michel Frey, he's a really good guy!",
+    )
+    .then((x) => console.log(x.result));
+```
 
 ```json
 {
