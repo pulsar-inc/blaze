@@ -2,7 +2,7 @@
 
 **Note: right now this lib is only compatible with openai LLMs.**
 
-To install the lib externally **(Not available yet!)**
+To install the lib externally
 
 ```bash
 # bun
@@ -20,6 +20,8 @@ yarn add openai @plsr/blaze
 <details>
   <summary>Example setup</summary>
   
+  **index.mjs:**
+
   ```typescript
   import OpenAI from "openai";
   import { Translator } from "@plsr/blaze";

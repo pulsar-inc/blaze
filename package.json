@@ -1,8 +1,19 @@
 {
   "name": "@plsr/blaze",
+  "version": "0.0.1-beta2",
+  "types": "types.d.ts",
+  "main": "dist/index.js",
   "module": "src/index.ts",
-  "version": "0.0.1",
   "type": "module",
+  "license": "MIT",
+  "files": [
+    "src/**/*",
+    "dist/**/*",
+    "types.d.ts"
+  ],
+  "scripts": {
+    "build": "bun build ./src/index.ts --outdir=dist --sourcemap=external --target=node --splitting"
+  },
   "devDependencies": {
     "@types/lodash-es": "^4.17.9",
     "@typescript-eslint/eslint-plugin": "^6.7.3",
