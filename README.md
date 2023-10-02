@@ -2,8 +2,6 @@
 
 **Note: right now this lib is only compatible with openai LLMs.**
 
-To install the lib externally
-
 ```bash
 # bun
 bun i openai @plsr/blaze
