@@ -15,7 +15,10 @@ yarn add openai @plsr/blaze
 
 ## Todo
 
-- [ ] Try to fix badly formatted JSON
+- [ ] On `Translator.result()`
+    - [x] Try to fix badly formatted JSON
+    - [ ] Remove any `null` fields
+    - [ ] Optionally apply default values
 
 ## Examples
 

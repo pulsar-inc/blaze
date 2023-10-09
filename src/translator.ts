@@ -6,6 +6,13 @@ import type {
 import type { JSONSchema, JSONValue } from "../types";
 import type OpenAI from "openai";
 
+const tripleBackquotesRegex = (secure = true) =>
+    secure
+        ? /```(?:json)?\n([^]+)\n```/gim
+        : /```(?:json|jsonc|javascript|typescript|js|ts)?\n([^]+)\n```/gim;
+const singleBackquotesRegex = /`([^`\n]+)`/gim;
+const getLuckyRegex = /({[^]+})|(\[[^]+\])/gim;
+
 function delay(time: number) {
     return new Promise((resolve) => setTimeout(resolve, time));
 }
@@ -18,6 +25,8 @@ export class Translator {
     messages: ChatCompletionMessage[] = [];
     debug: boolean;
     maxAPICallsPerMinute = 3;
+    /** Will use `eval` on GPT responses to hopefully fix badly formatted responses. */
+    insecureParsing = false;
 
     // default values
     systemInstructions = `You are a translator assistant.
@@ -60,6 +69,40 @@ Your goal is to translate user inputs into JSON Objects matching this schema:`;
             // Removing first element in the time list
             this.requestsTimeline = this.requestsTimeline.slice(1);
         }
+    }
+
+    private fixJSON(content: string): JSONValue {
+        if (content.includes("```")) {
+            // Markdown triple backquotes
+            const gp = content.matchAll(tripleBackquotesRegex(!this.insecureParsing));
+            const groups = Array.from(gp);
+            if (groups.length < 1 || groups[0].length < 2) {
+                throw Error("Invalid code snippet language in markdown.");
+            }
+            return this.insecureParsing
+                ? eval("let dd = " + groups[0][1] + "; dd")
+                : JSON.parse(groups[0][1]);
+        } else if (content.includes("`")) {
+            // Markdown single backquote
+
+            const gp = content.matchAll(singleBackquotesRegex);
+            const groups = Array.from(gp);
+            if (groups.length < 1 || groups[0].length < 2) {
+                throw Error("Invalid code snippet language in markdown.");
+            }
+            return this.insecureParsing
+                ? eval("let dd = " + groups[0][1] + "; dd")
+                : JSON.parse(groups[0][1]);
+        }
+
+        const gp = content.matchAll(getLuckyRegex);
+        const groups = Array.from(gp);
+        if (groups.length < 1 || groups[0].length < 2) {
+            throw Error("Could not fix the JSON.");
+        }
+        return this.insecureParsing
+            ? eval("let dd = " + groups[0][1] + "; dd")
+            : JSON.parse(groups[0][1]);
     }
 
     /**
@@ -190,6 +233,16 @@ Your goal is to translate user inputs into JSON Objects matching this schema:`;
         if (!this.messages.length) return null;
         const lastMessage = this.messages[this.messages.length - 1];
         if (lastMessage.role !== "assistant") return null;
-        return lastMessage.content ? JSON.parse(lastMessage.content) : null;
+        if (!lastMessage.content?.length) {
+            return null;
+        }
+        let parsedJson: JSONValue;
+        try {
+            parsedJson = JSON.parse(lastMessage.content);
+        } catch (error) {
+            if (this.debug) console.log("Error while parsing JSON, trying to fix the response.");
+            parsedJson = this.fixJSON(lastMessage.content);
+        }
+        return parsedJson;
     }
 }
