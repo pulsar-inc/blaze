@@ -21,9 +21,10 @@ export class Translator {
 
     // default values
     systemInstructions = `You are a translator assistant.
-    Your goal is to translate user inputs into JSON Objects matching this schema:`;
+Your goal is to translate user inputs into JSON Objects matching this schema:`;
 
     private requestsTimeline: number[] = [];
+    private oneMinutePlusGap = 60000 + 200;
 
     constructor(
         client: OpenAI,
@@ -44,24 +45,28 @@ export class Translator {
 
         if (
             this.requestsTimeline.length >= this.maxAPICallsPerMinute &&
-            currentTime - this.requestsTimeline[0] < 60000
+            currentTime - this.requestsTimeline[0] < this.oneMinutePlusGap
         ) {
-            const msToSleep = 60000 - (currentTime - this.requestsTimeline[0]);
+            const msToSleep = this.oneMinutePlusGap - (currentTime - this.requestsTimeline[0]);
 
             if (this.debug) console.log("Sleeping for", msToSleep, "ms");
 
             // Waiting the required delay
             await delay(msToSleep);
+        }
 
+        // Keep the list to max ${maxAPICallsPerMinute} items no matter what
+        if (this.requestsTimeline.length >= this.maxAPICallsPerMinute) {
             // Removing first element in the time list
             this.requestsTimeline = this.requestsTimeline.slice(1);
         }
     }
 
     /**
-     * Process messages to get LLM completions.
+     * Will send and process all messages to LLM for completion.
+     * @returns Instance of this class
      */
-    private async doLLMComplete() {
+    async process() {
         // Checking rate limit
         await this.ensureRateLimit();
         // Adding ts to timeline to ensure rate limits
@@ -80,6 +85,7 @@ export class Translator {
             console.error("Bad stop");
         }
         this.messages.push(chat.choices[0].message);
+        return this;
     }
 
     /**
@@ -96,7 +102,7 @@ export class Translator {
             role: "system",
             content:
                 this.systemInstructions +
-                "\n```json\n" +
+                "\n\n```json\n" +
                 JSON.stringify(this.schema, null, 2) +
                 "\n```\n",
         });
@@ -107,8 +113,7 @@ export class Translator {
             content: input,
         });
 
-        await this.doLLMComplete();
-        return this;
+        return this.process();
     }
 
     /**
@@ -126,7 +131,7 @@ export class Translator {
      * ```
      * ````
      */
-    async complete(input: string, prompt = "Complete your last response using this input:") {
+    async addContext(input: string, prompt = "Complete your last response using this context:") {
         if (!this.messages.some((x) => x.role === "assistant")) {
             throw new Error("Can't complete if nothing was translated first.");
         }
@@ -136,8 +141,7 @@ export class Translator {
             content: prompt + "\n```\n" + input + "\n```\n",
         });
 
-        await this.doLLMComplete();
-        return this;
+        return this.process();
     }
 
     /**
@@ -171,7 +175,7 @@ export class Translator {
      * @param handler
      * @returns Instance of this class
      */
-    processResult(handler: (result: string | null, cls: Translator) => void) {
+    middleware(handler: (result: JSONValue | null, cls: Translator) => void) {
         handler(this.result, this);
         return this;
     }
@@ -182,7 +186,7 @@ export class Translator {
      *  - remove any nullable fields
      *  - handle bad json objects
      */
-    get result() {
+    get result(): JSONValue | null {
         if (!this.messages.length) return null;
         const lastMessage = this.messages[this.messages.length - 1];
         if (lastMessage.role !== "assistant") return null;

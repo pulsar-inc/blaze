@@ -13,6 +13,10 @@ npm i openai @plsr/blaze
 yarn add openai @plsr/blaze
 ```
 
+## Todo
+
+- [ ] Try to fix badly formatted JSON
+
 ## Examples
 
 <details>
@@ -95,8 +99,8 @@ translator
     .translate(
         "Just sold 2 resistors and one capacitor to Jean Michel Frey, he's a really good guy!",
     )
-    .then((x) => x.processResult((res) => console.log(res)))
-    .then((x) => x.complete("He lives just next to my house in the Avenue Montaigne in Paris"))
+    .then((x) => x.middleware((res) => console.log(res)))
+    .then((x) => x.addContext("He lives just next to my house in the Avenue Montaigne in Paris"))
     .then((x) => console.log(x.result));
 ```
 

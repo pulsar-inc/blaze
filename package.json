@@ -1,9 +1,9 @@
 {
   "name": "@plsr/blaze",
-  "version": "0.0.1-beta2",
-  "types": "types.d.ts",
+  "version": "0.0.1-beta4",
   "main": "dist/index.js",
-  "module": "src/index.ts",
+  "module": "dist/index.js",
+  "types": "src/index.ts",
   "type": "module",
   "license": "MIT",
   "repository": {
@@ -20,10 +20,10 @@
   },
   "devDependencies": {
     "@types/lodash-es": "^4.17.9",
-    "@typescript-eslint/eslint-plugin": "^6.7.3",
-    "@typescript-eslint/parser": "^6.7.3",
+    "@typescript-eslint/eslint-plugin": "^6.7.4",
+    "@typescript-eslint/parser": "^6.7.4",
     "bun-types": "latest",
-    "eslint": "^8.50.0",
+    "eslint": "^8.51.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
     "typescript": "^5.2.2",
