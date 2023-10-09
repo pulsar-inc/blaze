@@ -155,6 +155,11 @@ translator
 }
 ```
 
+### Enable advanced parsing
+
+To enable javascript or typescript parsing, you can set `translator.insecureParsing = true`.
+Under the hood this will detect and `eval`uate javascript or typescript to return JSON.
+
 ## Ideas
 
 You could use this lib [`json-schema-to-typescript`](https://www.npmjs.com/package/json-schema-to-typescript) to generate typings for your inputs.
